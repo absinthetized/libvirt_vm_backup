@@ -1,0 +1,3 @@
+[submodule "virt-backup"]
+	path = virt-backup
+	url = https://git.firewall-services.com/virt-backup
