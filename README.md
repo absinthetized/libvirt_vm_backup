@@ -13,9 +13,9 @@ On its turn, virt-backup.pl requires:
 * the XML::Simple perl package
 * the Sys::Virt perl package
 
-All of these are available in the statndard CentOS repo as well as in standard repo from Debian and Ubuntu
+All of these are available in the standard CentOS repo as well as in standard repo from Debian and Ubuntu
 
-It _is_ rude and it _is not expected_ to be really elegant, but you should be able to edit it quickly to get your backups done.
+**libvirt_vm_backup** _is_ rude and it _is not expected_ to be really elegant, but you should be able to edit it quickly to get your backups done.
 If you do not want to make use of pbzip2, you can easely change the --compress option to fit your needs, but having a parallel zip utility is really useful to reduce backup timings
 ## Usage
 My standard usage is:
