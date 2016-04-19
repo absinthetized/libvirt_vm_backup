@@ -1,0 +1,73 @@
+#!/bin/sh
+
+#backup_VM_proto: prototype backup script for libvirt VM, with versioning
+#    Copyright (C) 2016  matteo nunziati
+
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#a space separated list of VM names as shown by 'virsh list'
+VMS=""
+#a comma separated list with dest mail to send the backup log to (NO SPACES)
+MAILTO=""
+#how many backups would you like to keep? must be >= 1
+KEEP="10"
+
+#this is the sender email address configured in sendmail
+FROM=""
+
+#usually you do not want to change these!
+LOG="/var/log/virt-backup.log"
+BKDIR="/var/lib/libvirt/backup"
+COMPRESS="pbzip2"
+
+> $LOG
+
+for VM in $VMS; do
+	date >> $LOG
+	echo config keeps latest $KEEP backups >> $LOG
+
+	echo "backing up VM $VM..." >> $LOG
+	/root/virt-backup.pl --action=dump --backupdir=$BKDIR --vm=$VM --compress=$COMPRESS --debug 1>> $LOG 2>&1
+
+	TAR_NAME="$BKDIR/$VM.$(date +%F-%H-%M-%S).tar"
+	echo creating tar archive $TAR_NAME >> $LOG
+	tar cvf $TAR_NAME $BKDIR/$VM $BKDIR/$VM.meta 1>> $LOG 2>&1
+
+	#ok the following is not so efficent but how cares...
+
+	echo " " >> $LOG
+	echo "seeking for exceeding backups..." >> $LOG
+	BACKUPS=$(ls -1 $BKDIR/$VM.*.tar | wc -l)
+
+	echo "found $BACKUPS (required was $KEEP):" >> $LOG
+	ls -1 $BKDIR/$VM.*.tar 1>> $LOG 2>&1
+        echo " " >> $LOG
+
+	#hypotesis is that we have no more than one exceeding backup to kill
+	if [ $BACKUPS -gt $KEEP ]; then
+		ONE_OUT=$(ls -1 $BKDIR/$VM.*.tar | head -1)
+		echo going to kill $ONE_OUT >> $LOG
+		rm -f $ONE_OUT 1>> $LOG 2>&1
+	fi
+
+	echo " " >> $LOG
+	echo "clean up folders" >> $LOG
+	rm -rvf $BKDIR/$VM $BKDIR/$VM.meta 1>> $LOG 2>&1
+	
+	date >> $LOG
+	echo "...done" >> $LOG
+	echo "-------" >> $LOG
+done
+
+cat $LOG | mail -s "VM backup report" -r "VM-BACKUP-ROBOT<$FROM>" $MAILTO
