@@ -20,12 +20,12 @@ If you do not want to make use of pbzip2, you can easely change the --compress o
 ## Usage
 My standard usage is:
 
-1. make a copy of the prototype
-2. edit the initial variables:
+1. make a copy of the prototype and the virt-backup script in a given dir (usually /root/)
+2. make a copy of the libvirt_vm_backup and edit the initial variables:
   * **VMS**: a space separated list of VM names as shown by 'virsh list'
   * **MAILTO**: a comma separated list with dest mail to send the backup log to (NO SPACES)
   * **KEEP**: how many backups would you like to keep? must be >= 1
-3. copy the script into one of the cron.* folders to get a backup at given scheduled times.
+3. move the edited copy of the prototype script into one of the cron.* folders to get a backup at given scheduled times.
 
 _OR_
 
