@@ -1,6 +1,6 @@
 # libvirt_vm_backup
 ##At a glance
-This script is a wrapper around the [virt-backup.pl](http://gitweb.firewall-services.com/?p=virt-backup;a=blob_plain;f=virt-backup;hb=HEAD) script by Daniel Berteaud. It adds the ability to retain more than one backup per time, stored in tar archives.
+This script is a wrapper around the [virt-backup.pl](http://gitweb.firewall-services.com/?p=virt-backup;a=summary) script by Daniel Berteaud. It adds the ability to retain more than one backup per time, stored in tar archives.
 
 It's a shell script whos dependancies are:
 * virt-backup.pl (already stored in this repo)
