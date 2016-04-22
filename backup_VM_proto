@@ -42,7 +42,7 @@ for VM in $VMS; do
 
 	TAR_NAME="$BKDIR/$VM.$(date +%F-%H-%M-%S).tar"
 	echo creating tar archive $TAR_NAME >> $LOG
-	tar cvf $TAR_NAME $BKDIR/$VM $BKDIR/$VM.meta 1>> $LOG 2>&1
+	tar cvf $TAR_NAME $BKDIR/$VM 1>> $LOG 2>&1
 
 	#ok the following is not so efficent but how cares...
 
